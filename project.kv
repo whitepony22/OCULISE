@@ -1,0 +1,1491 @@
+<CameraWidget>:
+    id: camera_widget
+    size_hint: 1, 1
+    # pos_hint: {"top": 1, "right": 1}
+    pos_hint: {"bottom": 1, "left": 0.95}
+    
+    RelativeLayout:
+        id: games_home
+        opacity: 0
+
+        canvas.before:
+            Color:
+                rgba: 0.471, 0.565, 0.612, 1 # gray colour
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Image:
+            id: go_to_options
+            source: 'Images/OPTIONS_GAMES.png'  # give keyboard icon@krupa 
+            size_hint: None, None
+            size: 220, 220  # Size of the image
+            pos_hint: {"center_x": 0.5, "top": 1}
+            
+        Image:
+            id: skip
+            source: 'Images/SKIP.png'  # Replace @krupa
+            size_hint: None, None
+            size: 220, 220  # Size of the image
+            pos_hint: {"right": 1, "center_y": 0.5}  # Position the image
+            opacity: 0 #check @krupa
+
+    FloatLayout:
+        id: camera_layout
+        size_hint: None, None
+        width: 250
+        height: 230
+        pos_hint: {"top": 1, "x": 0}
+        # pos_hint: {"bottom": 1, "left": 1}
+
+        canvas.before:
+            Color:
+                rgba: 0.471, 0.565, 0.612, 1 # gray colour
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [10]
+
+        Image:
+            id: camera_feed  # Reference to the image widget
+            source: "Images/CAM_INACTIVE.png"
+            allow_stretch: True
+            keep_ratio: True
+            size_hint: 0.95, 0.9  # Control the size if necessary
+            # pos_hint: {"bottom": 1, "center_x": 0.5}
+            # pos: self.parent.pos
+            size: self.parent.size  # Make it take the size of the parent (circular mask)
+            x: self.parent.x + (self.parent.width - self.width) / 2  # Center horizontally
+            y: self.parent.y  # Align to the bottom of the parent
+
+        Label:
+            id: countdown_label  # Label to display Countdown
+            text: ""
+            size_hint: None, None
+            pos_hint: {'x': 0.3, 'y': 0.2}
+            font_size: '140sp'
+            color: 0.471, 0.565, 0.612, 1 # gray colour
+
+        Label:
+            id: direction_label  # Label to display eye direction
+            text: " "
+            size_hint: (0.5, 0.1)
+            pos_hint: {"top": 0.95, "center_x": 0.5}
+            font_size: '20sp'
+            color: 1, 1, 1, 1  # White background for the widget
+
+    Image:
+        id: typemode_icon
+        source: "Images/DEFAULT.png"
+        size_hint: None, None
+        size: 100, 100  # Size of the image
+        pos_hint: {"x": 0.05, "y": 0.8}
+        opacity: 1  # Conditional opacity
+
+    Image:
+        id: gamemode_icon
+        source: "Images/DEFAULT.png"
+        size_hint: None, None
+        size: 150, 150  # Size of the image
+        pos_hint: {"x": 0.8, "y": 0.7}
+        opacity: 1  # Conditional opacity
+
+<Notification>:
+    size_hint: 1, 0.4
+    pos_hint: {'right': 1.6, 'y': -1.5}
+
+    # Two-toned pill background
+    canvas.before:
+        # Left portion (40% width) with rounded corners on the left side
+        Color:
+            rgba: (0.85, 0.84, 0.76, 1)  # Light beige on the left #d9d6c3
+        RoundedRectangle:
+            pos: self.pos
+            size: (self.width * 0.3, self.height)
+            radius: [dp(50), 0, 0, dp(50)]  # Round only the left corners
+
+        # Right portion (60% width) with rounded corners on the right side
+        Color:
+            rgba: (0.83, 0.75, 0.61, 1)  # Another beige color for the right side #d3bf9b
+        RoundedRectangle:
+            pos: (self.x + self.width * 0.3, self.y)
+            size: (self.width * 0.7, self.height)
+            radius: [0, dp(50), dp(50), 0]  # Round only the right corners
+
+    # Main horizontal layout for your content
+    BoxLayout:
+        orientation: "horizontal"
+        size_hint: 1, 1
+        pos_hint:{'x': 0, 'y': 0}
+        padding: dp(10), dp(10)
+        spacing: dp(10)
+
+        # Left X image
+        Image:
+            source: "Images/NOTIFICATION_CANCEL.png"  # Replace with your X image
+            size_hint: 0.3, 0.5
+            pos_hint: {'left': 1, 'center_y': 0.5}
+            allow_stretch: True
+            keep_ratio: True
+
+        # Circular image in the center-left
+        RelativeLayout:
+            size_hint: 0.7, 1.3
+            AsyncImage:
+                source: root.profile_pic  # Replace with your image
+                pos_hint: {"center_y": 0.4}
+                size_hint: None, None
+                height: root.height * 0.9
+                width: self.height
+                allow_stretch: True
+                keep_ratio: True
+                canvas.before:
+                    StencilPush
+                    Ellipse:
+                        pos: self.pos
+                        size: self.size
+                    StencilUse
+                canvas.after:
+                    StencilUnUse
+                    StencilPop
+
+        # Text area
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_x: 1
+            Label:
+                id: notification_sender_name
+                text: root.sender_name
+                font_size: "20sp"
+                color: (0, 0, 0, 1)  # Black
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+
+            Label:
+                id: message_text
+                text: root.message_text
+                font_size: "16sp"
+                color: (0, 0, 0, 1)
+                halign: "left"
+                valign: "middle"
+                line_spacing: 0.2  # Decrease the spacing between lines
+                text_size: self.size
+
+        # Right arrow image
+        Image:
+            source: "Images/NOTIFICATION_SELECT.png"  # Replace with your arrow image
+            size_hint: 0.2, 0.5
+            pos_hint: {'right': 1, 'center_y': 0.5}
+            allow_stretch: True
+            keep_ratio: True
+
+
+<TypeScreen>:
+    size_hint: 1, 1
+
+    typing_widget: typing_widget  # Link Python's ObjectProperty to this TextInput
+
+    ListWidget:
+        id: list_widget  # Add an ID for dynamic control
+
+    FileWidget:
+        id:file_widget
+
+    SearchWidget: 
+        id: search_widget
+
+    KeyboardWidget:
+        id: keyboard_widget
+
+    FloatLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0.737, 0.878, 0.906, 1  # light blue@krupa change color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Image:
+            id: go_to_menu
+            source: 'Images/MENU.png'  # give keyboard icon@krupa 
+            #background_down: 'Images/HOME_PRESSED.png'  # Optional, different image when pressed
+            size_hint: None, None
+            size: 220, 220  # Size of the image
+            pos_hint: {"right": 1, "center_y": 0.5}  # Position the image
+            
+        Image:
+            id: go_to_list
+            source: 'Images/LIST.png'  # Replace @krupa
+            size_hint: None, None
+            size: 220, 220  # Size of the image
+            pos_hint: {"center_x": 0.5, "top": 1}
+            opacity: 1 #check @krupa
+        
+        Image:
+            id: go_to_help
+            source: 'Images/HELP.png'  # Replace @krupa
+            size_hint: None, None
+            size: 220, 220  # Size of the image
+            pos_hint: {"bottom": 1, "center_x": 0.5}  # Position the image
+            opacity: 1 #check @krupa
+
+        Image:
+            id: go_to_files
+            source: 'Images/FILE.png'  # Replace @krupa
+            size_hint: None, None
+            size: 220, 220  # Size of the image
+            pos_hint: {"x": 0, "center_y": 0.5}  # Position the image
+            opacity: 1 #check @krupa
+
+
+    
+    # New BoxLayout for TextInput
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 200, 200, 200, 200  # Padding: left, top, right, bottom
+        spacing: 10  # Space between widgets
+        
+        # Custom TextInput for manual typing and arrow key input
+        TypingWidget:
+            id: typing_widget
+            multiline: True  # Single line input
+            markup: True
+            height: 100 #min(self.minimum_height, dp(200))  # Cap height to 200dp
+            hint_text: "Type here..."  # Placeholder text
+            hint_text_color: (0, 0, 0, .5) # Default colour
+            background_color: (0, 0, 0, 0)  # Transparent background
+            foreground_color: (0, 0, 0, 1)  # Black text
+            cursor_color: (0, 0, 0, 1)  # Black cursor
+            border: (0, 0, 0, 0)  # No border
+            font_size: 40  # Increase font size
+            font_name: "DejaVuSans.ttf"  # Use the correct path
+            size_hint_y: None
+            text_size: self.width, None  # Wrap text based on width
+
+        BoxLayout:  # Add background color to the prediction bar
+            size_hint_x: 1  # Let the width of the layout expand with its content
+            size_hint_y: 1
+            padding: 10
+
+            canvas.before:
+                Color:
+                    rgba: 0.6, 0.75, 0.8, 1  # Light gray background color
+                Rectangle:
+                    size: (min(root.prediction_width, self.size[0]) , 55)
+                    pos: (self.x , self.top - 55)
+
+            # ScrollView for displaying horizontal predictions
+            ScrollView:
+                id: prediction_scroll
+                size_hint: 1, 1
+                bar_width: 0
+                do_scroll_x: True  # Enable horizontal scrolling
+                do_scroll_y: False  # Disable vertical scrolling
+
+                GridLayout:
+                    id: prediction_layout
+                    size_hint_x: None  # Let the width of the layout expand with its content
+                    size_hint_y: 1
+                    rows: 1  # Arrange widgets horizontally
+                    width: self.minimum_width  # Adjust to fit the content
+                    spacing: 10  # Space between predictions
+
+<KeyboardWidget>:
+    id: keyboard_widget
+    size_hint_y: 0.4
+    pos_hint: {"bottom": 1}
+
+    GridLayout:
+        rows: 1
+        size_hint: 1, 1
+        
+        GridLayout:
+            id: am_letters_layout
+            cols: 4
+            size_hint_y: 0.25
+        GridLayout:
+            id: nz_letters_layout
+            cols: 4
+            size_hint_y: 0.25
+            
+        GridLayout:
+            id: numbers_layout
+            cols: 3
+            size_hint_y: 0.2
+            
+        GridLayout:
+            id: special_chars_layout
+            cols: 3
+            size_hint_y: 0.2
+            
+        GridLayout:
+            id: delete_layout
+            cols: 1
+            size_hint_y: 0.1
+
+<AlertPopup>:
+    size_hint: 0.4, 0.1
+    auto_dismiss: True
+    title:" "
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+        Label:
+            text: root.message
+            font_size: 18
+
+<SearchWidget>:
+    
+    FloatLayout:  
+        
+        FloatLayout:
+            orientation: "horizontal"
+            size_hint: (0.6, 1)
+            pos_hint: {"x": 0, "y": 0} 
+            canvas.before:
+                Color:
+                    rgba: 0.2588, 0.2588, 0.2588, 1  # Equivalent to #424242
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            
+            Image:
+                source: 'Images/SEARCH_BACK.png'
+                size_hint: None, None
+                size: 50, 50
+                pos_hint: {"x": 0.9, "y": 0.5}
+                keep_ratio: True
+                allow_stretch: True
+
+            Image:
+                source: 'Images/GEMINI.png'
+                keep_ratio: True  # Maintain the aspect ratio
+                size_hint: (1, None)  # 80% width, fixed height
+                height: dp(450)  # Adjust height as needed
+                pos_hint: {'center_x': 0.5, 'top': 1}  # Centered horizontally, at the top
+
+            Label:
+                id: search_query
+                text: ""
+                size_hint: None, None
+                size: self.texture_size  # Adjust size to fit text
+                font_size: '18sp'
+                color: 1, 1, 1, 1  # White color
+                pos_hint: {'center_x': 0.5, 'top': 0.81}  # Slightly above search bar
+
+            ScrollView:
+                id: search_result_scroll
+                size_hint: (0.65, 0.65)  # 80% width, 40% height
+                pos_hint: {'center_x': 0.5, 'top': 0.7}  # Below search bar
+                bar_width: 0
+                effect_cls: 'ScrollEffect'
+                do_scroll_x: False
+                do_scroll_y: True
+
+                Label:
+                    id: search_result
+                    text: ""
+                    size_hint: 1, None
+                    font_size: '15sp'
+                    color: 1, 1, 1, 1  # White color
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    size: self.texture_size  # Auto-size to fit text
+
+            FloatLayout:  # Add a layout for the loading indicator
+                id: loading_layout
+                size_hint: (0.5, 0.5) # Allow it to take the height of the image or label
+                pos_hint: {'center_x': 0.5, 'top': 0.7}
+                
+                Image:
+                    id: loading_image
+                    source: "Images/GEM_LOADING.gif"
+                    anim_delay: 0.05  # Adjust speed (lower = faster)
+                    size_hint: None, None
+                    size: 200, 200  # Adjust size as needed
+                    pos_hint: {'center_x': 0.5, 'top': 1}
+                    keep_ratio: True
+                    opacity: 0
+                    allow_stretch: True
+
+<RoundedButton>:
+    size_hint: (1, None)
+    height: 80
+    background_color: 0, 0, 0, 0  # Hide default background
+    canvas.before:
+        Color:
+            rgba: self.background_color if self.state == "normal" else (0.8, 0.8, 0.8, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [40]  # Adjust this for more or less rounding
+
+<ChatWidget>:
+    
+    FloatLayout:  
+        
+        FloatLayout:
+            id: chat
+            orientation: "horizontal"
+            size_hint: (0.6, 1)
+            pos_hint: {"x": 0.4, "y": 0} 
+            canvas.before:
+                Color:
+                    rgba: (217/255, 214/255, 195/255, 1)  # #d9d6c3 in RGBA
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            # Header with sender's name
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: 1, 0.1
+                pos_hint: {"right": 1, "top": 1}
+                padding: 10
+                spacing: 10
+                canvas.before:
+                    Color:
+                        rgba: (197/255, 187/255, 161/255, 1)  # Equivalent to #c5bba1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                Widget: #created to offset the label a bit to right
+                    size_hint_x:None
+                    width: 30
+                Label:
+                    id: sender_name
+                    font_size: '20sp'
+                    halign: "right"  # Align text to the right
+                    color: 0.2588, 0.2588, 0.2588, 0.7  # Equivalent to #424242
+                    # color: 1, 1, 1, 1 # white
+                    size_hint_x: 0
+
+            Image:
+                source: 'Images/CHAT_BACK.png'
+                size_hint: None, None
+                size: 50, 50
+                pos_hint: {"x": 0.06, "top": 0.985}
+                keep_ratio: True
+                allow_stretch: True
+
+            # Main Chat Area
+            ScrollView:
+                id: scroll_view
+                size_hint: 1, 0.8
+                pos_hint:{ "x" : 0.1, "top" : 0.89}
+                do_scroll_x: False
+
+                BoxLayout:
+                    id: chat_box
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: 10
+                    padding: 10
+
+            # Footer with text input and buttons
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: 0.9, 0.1
+                pos_hint: {"center_x": 0.5, "center_y": 0.05}
+                padding: 10
+                spacing: 10
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_x: 0.85
+                    size_hint_y: 0.85
+                    pos_hint: {"center_y": 0.5}
+                    padding: 10
+                    spacing: 10
+                    canvas.before:
+                        Color:
+                            rgba: (0.9, 0.9, 0.9, 1)  # Light gray background color
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [20]  # Rounded corners
+
+                    Image:
+                        size_hint: None, None
+                        size: 40, 40  # Size of the button
+                        pos_hint: {"left": 1, "center_y": 0.5}
+                        source: 'Images/FROM_FILES.png'  # Make the button background transparent
+                        # on_press: app.root.ids.file_widget.show()  # Show the file widget
+                        keep_ratio: True  # Maintain the aspect ratio
+                        allow_stretch: False  # Do not stretch the image
+
+                    Label:
+                        id: message_label
+                        text: "Down to type message"  # Placeholder text
+                        font_size: '18sp'
+                        color: (0.2588, 0.2588, 0.2588, 1) if self.text not in ["Down to type message","Right to get text here"] else (0.2588, 0.2588, 0.2588, 0.7)  # Equivalent to #424242
+                        size_hint_y: None
+                        height: self.texture_size[1] + 20  # Adjust height based on text
+
+                Button:
+                    size_hint: None, None
+                    size: 50, 50  # Size of the button
+                    pos_hint: {"center_y": 0.5}
+                    background_normal: 'Images/SEND.png'  # Make the button background transparent
+                    on_press: app.root.ids.chat_widget.send_message(app.root.ids.typing_widget.text)  # Send the message
+                    keep_ratio: True  # Maintain the aspect ratio
+                    allow_stretch: False  # Do not stretch the image
+
+        FloatLayout:
+            id: select_chat
+            orientation: "horizontal"
+            opacity: 1
+            size_hint: (0.6, 1)
+            pos_hint: {"x": 0.4, "y": 0} 
+            canvas.before:
+                Color:
+                    rgba: (217/255, 214/255, 195/255, 1)  # #d9d6c3 in RGBA
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Image:
+                source: 'Images/CHAT_BACK.png'
+                size_hint: None, None
+                size: 50, 50
+                pos_hint: {"x": 0.03, "top": 0.915}
+                keep_ratio: True
+                allow_stretch: True
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint: 1, 0.2
+                pos_hint: {"right": 1, "top": 1}
+
+                Image:
+                    source: 'Images/CHAT.png'
+                    size_hint: 1, 0.8
+                    pos_hint: {"X": 0}
+                    keep_ratio: True
+
+            ScrollView:
+                size_hint: 1, 0.8
+                pos_hint: {"right": 1, "top": 0.8}
+                GridLayout:
+                    id: senders
+                    cols: 1
+                    padding: 20
+                    spacing: 10
+                    size_hint_y: None
+                    height: self.minimum_height   
+
+<ChatBubble>:
+
+    size_hint_y: None
+    size_hint_x: 1
+    pos_hint: {"center_x": 0.4} 
+    height: self.texture_size[1] + 10  # Adjust height based on text
+    #width: self.texture_size[0] + 30 
+    padding: 10
+    canvas.before:
+        Color:
+            rgba: (0.4706, 0.5647, 0.6118, 1) if self.is_user else (0.70196, 0.62745, 0.46667, 1)  # sender #78909c/receiver #b3a077
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [20]  # Fully rounded edges
+    text_size: self.width, None
+    halign: "right" if self.is_user else "left"
+    valign: "middle"
+
+    # Small time label on the bubble
+    Label:
+        id: time_label
+        text: root.time
+        size_hint: None, None
+        font_size: "10sp"
+        color: 1, 1, 1, 1  # Or any color you prefer
+        pos: (root.x + 10, root.top - 90) if root.is_user else (root.right - 110, root.top - 90)
+
+    FloatLayout:
+        size_hint: 1, 1
+
+        # Profile Image (Outside Bubble)
+        AsyncImage:
+            id: profile_pic
+            source: root.profile_pic if not root.is_user else "Images/profile_pics/user_icon.png"
+            size_hint: None, None
+            size: (40, 40)
+            pos: (root.right + 5, root.top - 40) if root.is_user else (root.x - 45, root.top - 40)  # Align outside top left/right
+            allow_stretch: True
+            keep_ratio: True
+            canvas.before:
+                StencilPush
+                Ellipse:
+                    pos: self.pos
+                    size: self.size
+                StencilUse
+            canvas.after:
+                StencilUnUse
+                StencilPop
+
+<FileWidget>:
+    FloatLayout:
+        # Background color and size of the widget
+        size_hint: 0.3, 1
+        pos_hint: {"left": 1, "center_y": 0.5}
+
+        canvas.before:
+            Color:
+                rgba: 0.4, 0.514, 0.475, 1  # sap green
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        
+        ScrollView:
+            id: button_scroll
+            size_hint: 1, 1
+            pos_hint: {"left": 1, "center_y": 0.5}
+            do_scroll_x: False  # Disable horizontal scroll if not needed
+            do_scroll_y: True  # Enable vertical scroll
+
+            BoxLayout:
+                id: button_layout
+                orientation: 'vertical'
+                padding: 10
+                spacing: 10
+                size_hint: 0.3,1
+                height: self.minimum_height  # Adjust height based on the number of buttons
+
+    FloatLayout:
+        size_hint: 1, 1
+        pos_hint: {'x': 0,'top': 1}  # Position at the top-left corner
+        Image:
+            id: save_button
+            source: 'Images/SAVE_HIGHLIGHTED.png'
+            keep_ratio: True  # Maintain the aspect ratio
+            size_hint: 0.3, 0.2  # Disable size hint to use actual size
+            pos_hint: {'x': 0, 'top': 1}
+
+<ListWidget>:
+
+    FloatLayout:
+
+        size_hint: 0.5, 0.4  # Adjust size as per design 
+        pos_hint: {"x": 0.25, "y": 0.7} 
+
+        GridLayout:
+            id:grid_layout1
+            cols: 3
+            rows: 1  # 5 phrases + padding
+            spacing: 10
+            size_hint: 1, 1  # Adjust width to 50% for the right side
+            pos_hint: {"x": 0, "y": 0}  # Position on the right side  
+            Image:
+                source: 'Images/BUTTON_SEARCH.png'
+                keep_ratio: True
+                allow_stretch: True
+            Image:
+                source: 'Images/BUTTON_SPEAK.png'
+                keep_ratio: True
+                allow_stretch: True
+            Image:
+                source: 'Images/BUTTON_CHAT.png'
+                keep_ratio: True
+                allow_stretch: True
+    
+<HelpScreen>:
+    FloatLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0.737, 0.878, 0.906, 1  # light blue
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Image:
+            source: 'Images/HELP_CUR.png'
+            size_hint: 0.75, 0.4
+            keep_ratio: True
+            allow_stretch: True
+            pos_hint: {"top": 0.9, "left": 1}
+    
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: 1, 1
+
+            Widget:
+                size_hint_y: 0.3
+
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint: 1, 0.7
+                Image:
+                    source: 'Images/HELP_ALPH.png' #MENU.png'  # Replace with your home icon image path
+                    size_hint: 0.3, 1
+                    keep_ratio: True
+                    allow_stretch: True
+
+                Image:
+                    source: 'Images/HELP_NUM.png' #MENU.png'  # Replace with your home icon image path
+                    size_hint: 0.23, 1
+                    keep_ratio: True
+                    allow_stretch: True
+
+                Image:
+                    source: 'Images/HELP_CHAR.png' #MENU.png'  # Replace with your home icon image path
+                    size_hint: 0.23, 1
+                    keep_ratio: True
+                    allow_stretch: True
+
+                Image:
+                    source: 'Images/HELP_DEL.png' #MENU.png'  # Replace with your home icon image path
+                    size_hint: 0.23, 1.2
+                    keep_ratio: True
+                    allow_stretch: True
+
+        Image:
+            source: 'Images/LIST.png' #MENU.png'  # Replace with your home icon image path
+            #background_down: 'Images/HOME_PRESSED.png'  # Optional, different image when pressed
+            size_hint: None, None
+            size: 220, 220  # Size of the image
+            pos_hint: {"center_x": 0.5, "top": 1}
+            # on_release: root.go_home()  # Call the go_home method when released
+
+
+<OptionScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: 1, 1
+
+        canvas.before:
+            Color:
+                rgba: 0.596, 0.541, 0.690, 1  # Ash violet background color #988ab0
+            Rectangle:
+                size: self.size
+                pos: self.pos
+
+        FloatLayout:
+            Image:
+                source: 'Images/DEFAULT.png'  # give keyboard icon@krupa 
+                size_hint: 1, 1
+                pos_hint: {"center_x": 0.5, "top": 1.1}
+            
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 6
+            pos_hint: {'bottom': 1}
+            spacing: 10
+            padding: 20
+
+            Button:
+                id: IoT
+                background_color: 0, 0, 0, 0  # Make background transparent
+                canvas.before:
+                    Color:
+                        rgba: 0.3, 0.3, 0.3, 0.6
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [20]  # Rounded corners
+
+            Button:
+                id: news
+                background_color: 0, 0, 0, 0
+                canvas.before:
+                    Color:
+                        rgba: 0.3, 0.3, 0.3, 0.6
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [20]  # Rounded corners
+
+            BoxLayout:
+                id: games
+                orientation: "vertical"
+                size_hint: 2.3, 1
+                padding: 20
+
+                canvas.before:
+                    Color:
+                        rgba: 0.496, 0.441, 0.590, 1  # Ash violet background color #988ab0
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [20]
+                
+                Label:
+                    text: ""
+                        
+                BoxLayout:
+                    id: "game_buttons"
+                    size_hint: 1, 4
+                    spacing: 10
+                    orientation: "horizontal"
+
+                    Button:
+                        id: balloonpop
+                        background_color: 0, 0, 0, 0
+                        canvas.before:
+                            Color:
+                                rgba: 0.3, 0.3, 0.3, 0.6
+                            RoundedRectangle:
+                                size: self.size
+                                pos: self.pos
+                                radius: [20]  # Rounded corners
+                        
+                    Button:
+                        id: raincatcher
+                        background_color: 0, 0, 0, 0
+                        canvas.before:
+                            Color:
+                                rgba: 0.3, 0.3, 0.3, 0.6
+                            RoundedRectangle:
+                                size: self.size
+                                pos: self.pos
+                                radius: [20]  # Rounded corners
+
+                    Button:
+                        id: wordgame
+                        background_color: 0, 0, 0, 0
+                        canvas.before:
+                            Color:
+                                rgba: 0.3, 0.3, 0.3, 0.6
+                            RoundedRectangle:
+                                size: self.size
+                                pos: self.pos
+                                radius: [20]  # Rounded corners
+
+    FloatLayout:
+        size_hint: 1, 1
+        Image:
+            source: 'Images/MENU_OPTIONS.png'  # give keyboard icon@krupa 
+            size_hint: None, None
+            size: 220, 220  # Size of the image
+            pos_hint: {"top": 1, "center_x": 0.5}  # Position the image
+
+        FloatLayout:
+            size_hint: 1, 0.86
+            pos_hint: {"bottom": 1}
+
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint: 1, 1
+                spacing: 10
+                padding: 20
+                BoxLayout:
+                    Image:
+                        source: 'Images/BG_I.png'
+                        size_hint: 1, 1
+                        keep_ratio: True
+                        allow_stretch: True
+                BoxLayout:
+                    Image:
+                        source: 'Images/BG_N.png'
+                        size_hint: 1, 1
+                        keep_ratio: True
+                        allow_stretch: True
+
+                BoxLayout:
+                    orientation: "vertical"
+                    size_hint: 2.3, 1
+                    padding: 20
+
+                    BoxLayout:
+                        orientation:"horizontal"
+                        Widget:
+                            size_hint: None, None
+                            width: 20
+                        Label:
+                            text: "GAMES"
+                            font_size: '24sp'
+                            halign: 'right'
+                            size_hint_x: 0
+
+                    BoxLayout:
+                        id: "game_buttons"
+                        size_hint: 1, 4
+                        spacing: 10
+                        orientation: "horizontal"
+                        BoxLayout:
+                            Image:
+                                source: 'Images/BG_B.png'
+                                size_hint: 1, 1
+                                keep_ratio: True
+                                allow_stretch: True
+                        BoxLayout:
+                            Image:
+                                source: 'Images/BG_R.png'
+                                size_hint: 1, 1
+                                keep_ratio: True
+                                allow_stretch: True
+                        BoxLayout:
+                            Image:
+                                source: 'Images/BG_W.png'
+                                size_hint: 1, 1
+                                keep_ratio: True
+                                allow_stretch: True
+
+<BalloonPopGame>:
+    canvas.before:
+        Color:
+            rgba: 1, 0.9333, 0.8941, 1  # #ffeee4 background color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    FloatLayout:
+        Label:
+            id: streak_label
+            text: "Streak: " + str(root.streak)+ "\nHighest Streak: "+ str(root.highest_streak)
+            font_size: 24
+            size_hint: None, None
+            pos_hint: {"top": 1, "right": 0.9}
+            color: 0, 0, 0, 0.6  # 60% Black text color
+
+        Image:
+            id: balloon_image
+            size_hint: None, None
+            size: 200, 200
+            source: "Images/balloon_pop/balloon1.gif"
+            on_touch_down: root.pop_balloon()  # When touched, call pop_balloon() in the Python code
+
+<RainGame>:
+    FloatLayout:
+
+        canvas.before:
+            Color:
+                rgba: 0.706, 0.780, 0.788, 1    # Darker sky blue
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            id: score_label
+            text: "Score: " + str(root.score) + "\nHigh Score: " + str(root.high_score)
+            font_size: 24
+            size_hint: None, None
+            pos_hint: {"top": 1, "right": 0.9}
+            color: 0, 0, 0, 0.6  # 60% Black text color
+
+        FloatLayout:
+
+            size_hint: 0.75, 1
+            pos_hint: {"x": 0}
+
+            canvas.before:
+                Color:
+                    rgba: 0.906, 0.980, 0.988, 1    # Pale sky blue #e7fafc
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        #    Image:
+         #       source: 'Images/CLOUDS.png'
+          #      size_hint_x: 1
+           #     pos_hint: {"top": 1}
+            #    keep_ratio: True
+             #   allow_stretch: True
+
+            Image:
+                id: bucket
+                size_hint: None, None
+                size: 230, 200
+                pos: 0, 50  # Set initial position explicitly
+                source: 'Images/bucket.png'
+
+        Image:
+            source: 'Images/OPTIONS_GAMES.png'  # give keyboard icon@krupa 
+            size_hint: None, None
+            size: 200, 200  # Size of the image
+            pos_hint: {"center_x": 0.5, "top": 1}
+
+<WordGame>:
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: root.background_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        FloatLayout:
+            size_hint: 0.75, 1
+            pos_hint: {"x": 0}
+            canvas.before:
+                Color:
+                    rgba: root.game_area_bgcolor
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Label:
+                id: hint_label
+                text: "Hint: "
+                font_size: 25
+                size_hint: 0.9, None
+                text_size: self.width, None
+                height: self.texture_size[1]
+                pos_hint: {"x": 0.05, "top": 0.9}
+            # Word Layout
+            BoxLayout:
+                id: word_layout
+                spacing: 10
+                size_hint: 0.9, 0.2
+                pos_hint: {"center_x": 0.5, "top": 0.85}
+            # Tries label
+            Label:
+                id: tries_label
+                text: "Tries Left: 6"
+                font_size: 30
+                halign: "left"
+                text_size: None, None  # Allows text to expand dynamically
+                size_hint_x: None  # Disables automatic width scaling
+                size: self.texture_size  # Adjusts size based on content
+                pos_hint: {"x": 0.05, "center_y": 0.5}
+            # Alphabet Grid Layout
+            GridLayout:
+                id: letter_grid
+                cols: 13
+                spacing: 10
+                size_hint: 0.9, 0.2
+                pos_hint: {"center_x": 0.5, "y": 0.1}
+
+        # Info Layout (Hangman + Tries)
+        FloatLayout:
+            size_hint: 0.25, 1
+            pos_hint:{"x": 0.75}
+            Label:
+                id: streak_label
+                text: "Streak: " + str(root.streak)+ "\nHighest Streak: "+ str(root.highest_streak)
+                font_size: 24
+                size_hint: None, None
+                pos_hint: {"top": 1, "center_x": 0.5}
+                color: 1, 1, 1, 0.6  # 60% Black text color
+            Image:
+                id: hangman
+                source: 'Images/HANGMAN_0.png'
+                size_hint: 1, 1
+                pos_hint: {"top": 1, "x": 0}
+                #pos_hint: {"top": 0.8, "x": -0.1}
+                keep_ratio: True
+                allow_stretch: True
+
+<NewsScreen>:
+    orientation: 'vertical'
+    padding: 10
+    spacing: 10
+    canvas.before:
+        Color:
+            rgba: 0.502, 0.588, 1, 1    # News blue #8096ff
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Image:
+        source: "Images/NEWS.png"
+        size_hint: 0.6, 0.2
+        pos_hint: {'x': 0, 'top': 1}
+
+    ScrollView:
+        id: scroll_view
+        size_hint: 1, 0.75
+        pos_hint: {'top': 0.8}
+        do_scroll_x: False
+        do_scroll_y: True
+
+        GridLayout:
+            id: news_layout
+            cols: 1
+            padding: 20
+            spacing: 10
+            size_hint_y: None
+            height: self.minimum_height
+
+    ArticleDetailWidget:
+        id: article_detail
+
+<ArticleButton>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: dp(80)
+    padding: dp(10)
+    spacing: dp(10)
+    canvas.before:
+        Color:
+            rgba: 0.95, 0.95, 0.95, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10]
+    AsyncImage:
+        source: root.image_source if root.image_source else 'Images/THUMBNAIL.png'
+        size_hint_x: None
+        width: dp(80)
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: dp(5)
+        Label:
+            text: root.title
+            color: 0.2588, 0.2588, 0.2588, 1  # Equivalent to #424242
+            font_size: '16sp'
+            bold: True
+            text_size: self.width, None
+            size_hint_y: None
+            height: self.texture_size[1]
+            halign: 'left'
+            valign: 'middle'
+        Label:
+            text: root.short_description
+            font_size: '12sp'
+            color: 0.2588, 0.2588, 0.2588, 1  # Equivalent to #424242
+            text_size: self.width, None
+            size_hint_y: None
+            height: self.texture_size[1]
+            halign: 'left'
+            valign: 'middle'
+
+<ArticleDetailWidget>:
+    opacity: 0
+    size_hint: 0.68, 0.98
+    pos_hint: {"x": 0.31, "center_y": 0.5}
+
+    canvas.before:
+        # Border color and width
+        Color:
+            rgba: 0.502, 0.588, 1, 1    # News blue #8096ff
+        Line:
+            width: 10
+            rectangle: (self.x, self.y, self.width, self.height)
+        # News Article Detailed Area
+        Color:
+            rgba: 0.95, 0.95, 0.95, 1   # Sorta white 
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [20]
+
+    Image:
+        source: 'Images/NEWS_BACK.png'
+        size_hint: None, None
+        size: 50, 50
+        pos_hint: {"x": 0, "top": 0.95}
+        keep_ratio: True
+        allow_stretch: True
+        
+    AsyncImage:
+        source: root.image_source if root.image_source else 'Images/THUMBNAIL.png'
+        size_hint: 1, 0.4
+        pos_hint: {"top": 0.95, "right": 1}
+        keep_ratio: True
+        allow_stretch: True
+
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: 0.9, 0.5
+        pos_hint: {"center_x": 0.5, "top": 0.55}
+        padding: dp(10)
+        spacing: dp(5)
+
+        Label:
+            text: root.title
+            font_size: '20sp'
+            bold: True
+            color: 0, 0, 0, 1 # Black
+            size_hint_y: None
+            height: self.texture_size[1]
+            halign: 'left'
+            valign: 'middle'
+            text_size: self.width, None   # Sets the wrapping width to the Label's width
+
+        ScrollView:
+            id: article_content
+            size_hint_y: 1
+            Label:
+                text: root.description
+                font_size: '16sp'
+                size_hint: 1, None
+                color: 0, 0, 0, 1
+                height: self.texture_size[1]
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.width, None   # Sets the wrapping width to the Label's width
+
+
+<EmergencyWidget>:
+    FloatLayout:
+        Image:
+            source: 'Images/ALERT.png'  # Path to your background image
+            allow_stretch: True  # Allow the image to stretch
+            keep_ratio: True  # Maintain the aspect ratio
+            size_hint_y: None  # Disable automatic height sizing
+            height: 1000
+            size_hint_x: 1  # Set full width of the screen
+            pos_hint: {"top": 1}  # Align the image to the top of the widget
+
+<HomeScreen>:
+    BoxLayout:
+        orientation: 'horizontal'
+        spacing: 2
+        
+        canvas.before:
+            Color:
+                rgba: 0.737, 0.878, 0.906, 1  # light blue background
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Left Column: Type New Button
+        BoxLayout:
+            id: left_box
+            orientation: 'vertical'
+            size_hint_x: 0.5  # Start with 0.5 size hint
+            RelativeLayout:
+                Button:
+                    id: left_text
+                    text: 'TYPE\nNEW'
+                    font_size: 28
+                    background_color: 0.2078, 0.3765, 0.6588, 0.62  # light blue
+                    on_release: root.type_new_page()  # Add method to navigate to typing page
+
+                Image:
+                    id: home_icon
+                    source: 'Images/TYPE.png'  # Replace with your image path
+                    size_hint: None, None
+                    size: 200, 200  # Image size
+                    pos_hint: {"x": 0, "center_y": 0.5}  # Position the image
+                    
+
+        # Main List Area with Phrases and Speak Buttons
+        BoxLayout:
+            id: right_box
+            orientation: 'vertical'
+            size_hint_x: 0.5  # Start with 0.5 size hint
+
+            RelativeLayout:
+                
+                FloatLayout:
+                    RelativeLayout:
+                        opacity: 1
+                        Button:
+                            id:basic_phrase
+                            text: 'BASIC\nPHRASE'
+                            font_size: 28
+                            #size_hint: 1, 1
+                            background_color: 0.149, 0.584, 0.361, 0.68  # light green
+
+                        Image:
+                            source: 'Images/BASIC_PHRASES.png'  # Replace with your image path
+                            size_hint: None, None
+                            size: 200, 200  # Image size
+                            pos_hint: {"right": 1, "center_y": 0.5}  # Position the image
+
+                ScrollView:
+                    do_scroll_y: True
+                    do_scroll_x: False
+                    id: scroll_view
+
+                    GridLayout:
+                        id: grid_layout
+                        cols: 1
+                        height: self.minimum_height  # Adjust height based on the content
+                        row_default_height: 100       # Default height of each row (optional)
+                        row_force_default: True      # Enforce default row height (optional)
+                        spacing: 2
+                        padding: 0
+                        opacity: 0
+                        size_hint_y: None
+
+                        
+                        Button:
+                            background_normal: 'Images/PHRASE.png'  # Default image
+                            size_hint_y: None
+                            height: 100
+                            text: 'YES'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE_ALT.png'  # Alternate background image
+                            size_hint_y: None
+                            height: 100
+                            text: 'NO'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+                            
+                        Button:
+                            background_normal: 'Images/PHRASE.png'  # Default image
+                            text: 'HELLO'
+                            font_size: 24
+                            size_hint_y: None  # Fill available width, auto height
+                            height: 100
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE_ALT.png'  # Alternate background image
+                            size_hint_y: None
+                            height: 100
+                            text: 'WATER'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE.png'  # Default image
+                            size_hint_y: None
+                            height: 100
+                            text: 'HUNGRY'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE_ALT.png'  # Alternate background image
+                            size_hint_y: None
+                            height: 100
+                            text: 'MEDICINE'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE.png'  # Default image
+                            size_hint_y: None
+                            height: 100
+                            text: 'SLEEPY'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE_ALT.png'  # Alternate background image
+                            size_hint_y: None
+                            height: 100
+                            text: 'PAIN'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE.png'  # Default image
+                            size_hint_y: None
+                            height: 100
+                            text: 'TV'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE_ALT.png'  # Alternate background image
+                            size_hint_y: None
+                            height: 100
+                            text: 'I\'M FINE'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE.png'  # Default image
+                            size_hint_y: None
+                            height: 100
+                            text: 'THANK YOU'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE_ALT.png'  # Alternate background image
+                            size_hint_y: None
+                            height: 100
+                            text: 'BYE'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE.png'  # Default image
+                            size_hint_y: None
+                            height: 100
+                            text: 'SORRY'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+                        Button:
+                            background_normal: 'Images/PHRASE_ALT.png'  # Alternate background image
+                            size_hint_y: None
+                            height: 100
+                            text: 'HELP'
+                            font_size: 24
+                            keep_ratio: True
+                            allow_stretch: False
+
+    # Floating Home button on top
+    FloatLayout:
+        id: home_button
+        size_hint: None, None
+        pos_hint: {"center_x": 0.5, "top": 1}  # Position at the top of the screen
+
+        Button:
+            background_normal: 'Images/EMERGENCY.png'  # Image path
+            background_down: 'Images/EMERGENCY_PRESSED.png'  # Optional, different image when pressed
+            size_hint: None, None
+            size: 250, 250  # Size of the image
+            pos_hint: {"center_x": 0.5, "top": 1}
+            on_release:
+                # Perform your button action here
+                root.show_emergency_widget()
+
+        Image:
+            source: 'Images/OPTIONS.png'
+            size_hint: None, None
+            size: 220, 220  # Size of the image
+            pos_hint: {"bottom": 1, "center_x": 0.5}  # Position the image
+            opacity: 1 
+
+
+<IoTScreen>:
+    
+    BoxLayout:
+        orientation: 'horizontal'
+        canvas.before:
+            Color:
+                rgba: 0.851, 0.737, 0.906, 1  # light purple
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        
+        Button:
+            id: fan_button
+            text: 'FAN\n\n'
+            font_size: 30
+            background_color: 0.900, 0.600, 0.906, 1  # light purple
+            size_hint_x: 0.5
+            padding: [0, 0, 0, 100]
+            on_release:
+                root.select_device('fan')  # Call select_device method with 'fan'
+
+        Button:
+            id: light_button
+            text: 'LIGHT\n\n'
+            font_size: 30
+            background_color: 0.6471, 0.3804, 0.8353, 1  # light violet
+            size_hint_x: 0.5
+            padding: [0, 0, 0, 100]
+            on_release:
+                root.select_device('light')  # Call select_device method with 'light'
+
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 0  # Background color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Image:
+            source: 'Images/MENUT.png'  # Replace with your home icon image path
+            # background_down: 'Images/HOMER_PRESSED.png'  # Optional, different image when pressed
+            size_hint: None, None
+            size: 220, 220  # Size of the image
+            pos_hint: {"center_x": 0.5, "top": 1}
+            # on_release: root.go_home()  # Call the go_home method when released
